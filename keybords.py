@@ -1,8 +1,8 @@
 import telebot
 
-button_pictures = telebot.types.KeyboardButton(text= 'Ударить негра😂')
-button_text = telebot.types.KeyboardButton(text= 'Удприть ребенка негра🥰')
-button_back = telebot.types.KeyboardButton(text= 'Назад')
+button_pictures = telebot.types.KeyboardButton(text= 'Генерация изображения 🌅')
+button_text = telebot.types.KeyboardButton(text= 'Генерация текста💬')
+button_back = telebot.types.KeyboardButton(text= 'Назад↩')
 
 
 keybord_2 = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
