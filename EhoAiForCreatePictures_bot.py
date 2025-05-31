@@ -1,12 +1,27 @@
 import telebot,keybords
 import fsm
 import ai
-TOKEN = '7931226849:AAEyPiV7BdqT6iiwBb7AjQbkcIp9FuHYJis'
-# https://api.telegram.org/bot7931226849:AAEyPiV7BdqT6iiwBb7AjQbkcIp9FuHYJis/deleteWebhook
+import loguru
+import yaml
+import sys
 
+# https://api.telegram.org/bot7931226849:AAEyPiV7BdqT6iiwBb7AjQbkcIp9FuHYJis/deleteWebhook
+logger = loguru.logger
+
+try:
+     with open("./config_2.yaml","r") as file:
+        cfg = yaml.safe_load(file)
+        logger.info('Успешно загружен конфиг')
+except Exception as e:
+     logger.warning('Error config ({})',str(e))
+     input()
+     sys.exit(1)
+TOKEN = cfg['telegram_token']
 stater = fsm.FMS()
-ai_servise = ai.AI()
-bot = telebot.TeleBot(TOKEN)
+ai_servise = ai.AI(cfg)
+
+
+bot = telebot.TeleBot(TOKEN,threaded=False)
 def main_menu(message):
         if message.text =="Генерация изображения 🌅":
             stater.set_state(message.chat.id, fsm.IMAGE_STATE)
@@ -43,6 +58,14 @@ def back_main_menu(message):
 @bot.message_handler(func = lambda message:True)
 def ehno_call(message):
     status = stater.get_state(message.chat.id)
+    logger.info(
+         "пользователь[{}:{}]отправил сообщение '{}' в состоянии{}",
+         message.chat.id,
+         message.from_user.first_name,
+         message.text,
+         status
+    )
+
     if status == fsm.DEFAULT_STATE:
         main_menu(message)
     elif status == fsm.IMAGE_STATE:
